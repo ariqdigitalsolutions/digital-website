@@ -107,5 +107,5 @@ orderForm?.addEventListener("submit", (event) => {
     `Email address: ${String(formData.get("email") || "").trim() || "Not provided"}`,
   ].join("\n");
 
-  window.location.href = `https://wa.me/263781234567?text=${encodeURIComponent(details)}`;
+  window.location.href = `https://wa.me/263781385609?text=${encodeURIComponent(details)}`;
 });

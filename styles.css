@@ -1065,3 +1065,22 @@ textarea:focus {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+.branham-quote {
+    text-align: center;
+    padding: 80px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.quote-text {
+    font-size: 1.5rem;
+    font-style: italic;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.quote-reference {
+    font-size: 1rem;
+    line-height: 1.8;
+    opacity: 0.8;
+}

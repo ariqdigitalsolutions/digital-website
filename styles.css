@@ -579,31 +579,35 @@ h1::first-line {
   transform: translateX(-50%);
 }
 
-.marketing {
+.chatbot {
   border: 0;
 }
 
-.marketing::before {
+.chatbot::before {
   content: "";
   position: absolute;
-  left: 0.35rem;
-  top: 0.85rem;
-  width: 1.5rem;
-  height: 0.8rem;
+  left: 0.28rem;
+  top: 0.52rem;
+  width: 1.55rem;
+  height: 1.15rem;
   border: 2px solid var(--blue);
-  border-right-width: 0.45rem;
-  transform: skewX(-12deg);
+  border-radius: 0.55rem;
+  background:
+    radial-gradient(circle at 0.43rem 0.55rem, var(--blue) 0 0.1rem, transparent 0.12rem),
+    radial-gradient(circle at 0.78rem 0.55rem, var(--blue) 0 0.1rem, transparent 0.12rem),
+    radial-gradient(circle at 1.13rem 0.55rem, var(--blue) 0 0.1rem, transparent 0.12rem);
 }
 
-.marketing::after {
+.chatbot::after {
   content: "";
   position: absolute;
-  left: 0.8rem;
-  bottom: 0.35rem;
-  width: 0.55rem;
-  height: 0.8rem;
+  left: 0.55rem;
+  bottom: 0.38rem;
+  width: 0.48rem;
+  height: 0.48rem;
   border-left: 2px solid var(--blue);
-  transform: rotate(-18deg);
+  border-bottom: 2px solid var(--blue);
+  transform: skewY(-35deg);
 }
 
 .camera::before {

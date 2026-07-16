@@ -81,10 +81,15 @@ async function loadPosts() {
   return [...posts].sort((a, b) => String(b.date).localeCompare(String(a.date)));
 }
 
+function postUrl(post) {
+  return post.articleUrl || `blog-post.html?post=${encodeURIComponent(post.slug)}`;
+}
+
 function articleCard(post) {
   const imageAlt = post.imageAlt || post.title;
+  const url = postUrl(post);
   const image = post.image ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(imageAlt)}" loading="lazy" />` : `<div class="blog-card-placeholder" aria-hidden="true"><span>${escapeHtml(post.category || "AriQ")}</span></div>`;
-  return `<article class="blog-card"><a class="blog-card-media" href="blog-post.html?post=${encodeURIComponent(post.slug)}">${image}</a><div class="blog-card-body"><div class="blog-meta"><span>${escapeHtml(post.category || "General")}</span><time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time></div><h2><a href="blog-post.html?post=${encodeURIComponent(post.slug)}">${escapeHtml(post.title)}</a></h2><p>${escapeHtml(post.excerpt)}</p><div class="blog-card-footer"><small>${escapeHtml(post.readTime || "Article")}</small><a href="blog-post.html?post=${encodeURIComponent(post.slug)}">Read article →</a></div></div></article>`;
+  return `<article class="blog-card"><a class="blog-card-media" href="${escapeHtml(url)}">${image}</a><div class="blog-card-body"><div class="blog-meta"><span>${escapeHtml(post.category || "General")}</span><time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time></div><h2><a href="${escapeHtml(url)}">${escapeHtml(post.title)}</a></h2><p>${escapeHtml(post.excerpt)}</p><div class="blog-card-footer"><small>${escapeHtml(post.readTime || "Article")}</small><a href="${escapeHtml(url)}">Read article →</a></div></div></article>`;
 }
 
 async function initialiseBlog() {
@@ -110,7 +115,7 @@ async function initialiseBlog() {
       search?.addEventListener("input", render); category?.addEventListener("change", render); render();
     }
     if (postContainer) {
-      const slug = new URLSearchParams(window.location.search).get("post");
+      const slug = postContainer.dataset.postSlug || new URLSearchParams(window.location.search).get("post");
       const post = posts.find((item) => item.slug === slug);
       if (!post) { postContainer.innerHTML = '<a class="back-link" href="blog.html">← Back to Blog</a><div class="article-error"><h1>Article not found</h1><p>The article may have been moved or removed.</p></div>'; return; }
       document.title = `${post.title} | AriQ Digital Solutions`;

@@ -1,215 +1,493 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AriQ Digital Solutions | Technology Services Zimbabwe</title>
-    <meta name="description" content="AriQ Digital Solutions provides Starlink installation, web and mobile development, CCTV, WhatsApp chatbots, business automation and IT support across Zimbabwe." />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header" data-header>
-      <a class="brand" href="#home" aria-label="AriQ Digital Solutions home">
-        <img src="ariq-logo-cropped.png" alt="AriQ Digital Solutions" />
-      </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="site-nav" id="site-nav" data-nav><a href="#home" class="active">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#portfolio">Portfolio</a><a href="blog.html">Blog</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>
-      <a class="header-cta" href="index.html#contact">Get Started</a>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquor Republic POS</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <img src="assets/millet-logo.jpeg" alt="Liquor Republic" class="login-logo" />
+      <h1>Liquor Republic POS</h1>
+      <p>Sign in to continue</p>
+      <label>Email
+        <input id="email" name="lr_email_20260626" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" placeholder="email@example.com" />
+      </label>
+      <label>Password
+        <input id="password" name="lr_password_20260626" type="password" autocomplete="new-password" data-lpignore="true" placeholder="Password" onkeydown="if(event.key==='Enter') login()" />
+      </label>
+      <button onclick="login()">Login</button>
+      <div id="loginMessage"></div>
+    </div>
+  </div>
 
-    <main>
-      <section class="hero" id="home">
-        <div class="hero-copy">
-          <p class="eyebrow">AriQ Digital Solutions</p>
-          <h1 class="hero-title">
-            <span>Connecting People.</span>
-            <span>Empowering Business.</span>
-            <span>Shaping the Future.</span>
-          </h1>
-          <p>
-            We help ambitious businesses grow through innovative technology, creative strategy, and future-ready
-            digital solutions.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#services">Our Services</a>
-            <a class="button secondary" href="#contact">Contact Us</a>
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/millet-logo.jpeg" alt="Liquor Republic" class="sidebar-logo" />
+        <h2>Liquor Republic</h2>
+        <p id="userInfo">User</p>
+      </div>
+
+      <nav class="side-nav">
+        <button id="dashboardNavBtn" class="nav-btn active" onclick="openPanel('dashboardPanel')">Dashboard</button>
+        <button class="nav-btn" onclick="openPanel('salesPanel')">Record Sale</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('cancelPanel')">Cancel Transaction</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('stockPanel')">Add / Receive Stock</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('deductPanel')">Deduct Stock</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('stockTakePanel')">Stock Take</button>
+        <button class="nav-btn" onclick="openPanel('reportsPanel')">Reports</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('pastelPanel')">Pastel Auto Sync</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('movementsPanel')">Stock Movements</button>
+        <button class="nav-btn supervisor-only" onclick="openPanel('settingsPanel')">Settings</button>
+        <button class="nav-btn" onclick="openPanel('helpPanel')">Help &amp; Updates</button>
+        <button class="nav-btn" onclick="openPanel('passwordPanel')">User Administration</button>
+        <button class="logout" onclick="logout()">Logout</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="dashboardPanel" class="panel active-panel">
+        <div class="page-title">
+          <h1>Dashboard</h1>
+          <p>Supervisor stock overview and sales summary.</p>
+        </div>
+        <div class="metrics">
+          <div class="metric">Products<strong id="productCount">0</strong></div>
+          <div class="metric">Today Sales<strong id="todaySales">$0.00</strong></div>
+        </div>
+        <div class="card">
+          <h2>Low Stock Alerts</h2>
+          <div id="alerts"></div>
+        </div>
+        <div class="card">
+          <h2>Current Stock</h2>
+          <table>
+            <thead>
+              <tr><th>Product</th><th>Selling</th><th>Qty</th><th>Alert Level</th></tr>
+            </thead>
+            <tbody id="stockTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="salesPanel" class="panel sales-panel-layout">
+        <div class="page-title compact-title">
+          <h1>Record Sale</h1>
+          <p>Add products to one receipt, then complete payment once.</p>
+        </div>
+
+        <div class="card sale-entry-card compact-card">
+          <h2>Add Product to Receipt</h2>
+          <div class="sale-entry-row compact-sale-row">
+            <label>Product
+              <select id="saleProduct" onchange="onSaleProductChange()"></select>
+            </label>
+            <label>Quantity
+              <input id="saleQuantity" type="number" min="1" step="1" value="1" onkeydown="handleSaleQuantityKey(event)" />
+            </label>
+            <button class="add-line-btn" onclick="addProductToReceipt()">Add / Enter</button>
+          </div>
+          <p id="saleProductHint" class="muted compact-hint"></p>
+          <div id="saleMessage"></div>
+        </div>
+
+        <div class="sale-workspace">
+          <div class="card receipt-card compact-card">
+            <h2>Current Receipt</h2>
+            <div class="receipt-table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Action</th></tr>
+                </thead>
+                <tbody id="receiptItemsTable"></tbody>
+              </table>
+            </div>
+            <div class="receipt-summary compact-summary">
+              <div class="metric compact-metric">Total Amount<strong id="receiptGrandTotal">$0.00</strong></div>
+              <div class="metric compact-metric">Items on Receipt<strong id="receiptItemCount">0</strong></div>
+            </div>
+            <button class="danger small-btn" onclick="clearReceipt()">Clear Receipt</button>
+            <div class="transfer-box">
+              <button class="small-btn" onclick="toggleTransferOptions()">Transfer Transaction</button>
+              <div id="transferOptions" class="transfer-options hidden">
+                <button class="small-btn" onclick="receiveTransferPrompt()">Receive Transaction</button>
+                <button class="small-btn" onclick="transferCurrentReceipt()">Transfer Transaction</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card payment-card compact-card">
+            <h2>Payment</h2>
+            <div class="payment-grid split-payment-grid">
+              <label>Currency
+                <select id="saleCurrency" onchange="onSaleCurrencyChange()">
+                  <option value="USD" selected>USD</option>
+                  <option value="ZAR">ZAR</option>
+                  <option value="ZWG">ZWG</option>
+                </select>
+              </label>
+              <label>Cash Amount
+                <input id="cashAmountReceived" type="number" min="0" step="0.01" placeholder="0.00" oninput="updatePaymentPreview()" />
+              </label>
+              <label id="posEcoAmountLabel">POS (Swipe / EcoCash) Amount
+                <input id="posEcoAmountReceived" type="number" min="0" step="0.01" placeholder="0.00" oninput="updatePaymentPreview()" />
+              </label>
+              <input id="amountReceived" type="hidden" value="0" />
+              <input id="paymentMethod" type="hidden" value="CASH" />
+            </div>
+            <div class="payment-metrics compact-payment-metrics">
+              <div class="metric compact-metric">Total<strong id="paymentTotal">$0.00</strong></div>
+              <div class="metric compact-metric">Received<strong id="paymentAmountReceived">$0.00</strong></div>
+              <div class="metric compact-metric">Change<strong id="paymentChange">$0.00</strong></div>
+            </div>
+            <button onclick="recordSale()">Record Sale</button>
           </div>
         </div>
-        <div class="globe-wrap" aria-hidden="true">
-          <div class="globe">
-            <span class="orbit orbit-one"></span>
-            <span class="orbit orbit-two"></span>
-            <span class="orbit orbit-three"></span>
-            <span class="flare"></span>
-            <span class="network"></span>
+
+      </section>
+
+      <section id="cancelPanel" class="panel">
+        <div class="page-title">
+          <h1>Cancel Transaction</h1>
+          <p>Supervisor-only cancellation. Enter the receipt number and a short reason.</p>
+        </div>
+        <div class="card">
+          <label>Receipt Number
+            <input id="cancelReceiptNumber" type="text" placeholder="e.g. INV-20260624-203000-123" />
+          </label>
+          <label>Reason for Cancellation <span class="muted">(maximum 40 letters)</span>
+            <input id="cancelReason" type="text" maxlength="40" placeholder="Reason, max 40 letters" />
+          </label>
+          <button class="danger" onclick="cancelTransaction()">Cancel Transaction</button>
+          <div id="cancelMessage"></div>
+        </div>
+      </section>
+
+      <section id="stockPanel" class="panel">
+        <div class="page-title">
+          <h1>Add / Receive Stock</h1>
+          <p>This page is only for adding new stock.</p>
+        </div>
+        <div class="card">
+          <label>Product Name
+            <select id="productName" onchange="onProductNameInput()"></select>
+          </label>
+          <label id="newProductNameWrap" class="hidden">New Product Name
+            <input id="newProductName" type="text" placeholder="Type new product name" />
+          </label>
+          <div class="form-grid receive-stock-grid">
+            <label>Current Selling Price ($)
+              <input id="sellingPrice" type="number" step="0.01" />
+            </label>
+            <label>Quantity Received
+              <input id="quantity" type="number" min="1" step="1" />
+            </label>
+            <label>Low Stock Alert Level
+              <input id="alertLevel" type="number" min="0" step="1" value="5" />
+            </label>
+          </div>
+          <button onclick="receiveStock()">Add / Receive Stock</button>
+          <button class="small-btn" onclick="changeReceiveStockPrice()">Change Price</button>
+          <div id="stockMessage"></div>
+        </div>
+      </section>
+
+      <section id="deductPanel" class="panel">
+        <div class="page-title">
+          <h1>Deduct Stock</h1>
+          <p>Use for damaged items, expired items, or manual stock removals.</p>
+        </div>
+        <div class="card">
+          <label>Product
+            <select id="deductProduct"></select>
+          </label>
+          <label>Quantity to Deduct
+            <input id="deductQuantity" type="number" min="1" step="1" />
+          </label>
+          <label>Reason
+            <input id="deductReason" type="text" placeholder="Damaged / expired / adjustment" />
+          </label>
+          <button onclick="deductStock()">Deduct Stock</button>
+        </div>
+      </section>
+
+      <section id="stockTakePanel" class="panel">
+        <div class="page-title">
+          <h1>Stock Take</h1>
+          <p>Update system stock to match the physical count.</p>
+        </div>
+        <div class="card">
+          <label>Product
+            <select id="stockTakeProduct"></select>
+          </label>
+          <label>Actual Quantity Counted
+            <input id="stockTakeQuantity" type="number" min="0" step="1" />
+          </label>
+          <button onclick="stockTake()">Save Stock Take</button>
+        </div>
+      </section>
+
+      <section id="reportsPanel" class="panel">
+        <div class="page-title">
+          <h1>Reports</h1>
+          <p>Sales reports and daily cashup summaries.</p>
+        </div>
+        <div class="card supervisor-only" id="salesPerformanceCard">
+          <h2>Sales Performance</h2>
+          <button onclick="showReport('daily')">Daily Report</button>
+          <button onclick="showReport('weekly')">Weekly Report</button>
+          <button onclick="showReport('monthly')">Monthly Report</button>
+          <div id="report"></div>
+        </div>
+
+        <div class="card cashup-card">
+          <h2>Cashup Summary Report</h2>
+          <label>Currency
+            <select id="cashupCurrency" onchange="refreshCashupReports()">
+              <option value="USD" selected>USD</option>
+              <option value="ZAR">ZAR</option>
+              <option value="ZWG">ZWG</option>
+            </select>
+          </label>
+
+          <h3>Cashier Cashup</h3>
+          <div class="metrics compact-cashup-metrics">
+            <div class="metric compact-metric">Cash<strong id="cashierCashTotal">$0.00</strong></div>
+            <div class="metric compact-metric">POS (Swipe / EcoCash)<strong id="cashierPosTotal">$0.00</strong></div>
+            <div class="metric compact-metric legacy-ecocash">EcoCash<strong id="cashierEcocashTotal">$0.00</strong></div>
+            <div class="metric compact-metric">Total<strong id="cashierGrandTotal">$0.00</strong></div>
+          </div>
+          <p id="cashierCashupStatus" class="muted"></p>
+          <div class="form-grid cashup-input-grid">
+            <label>Actual Cash Amount
+              <input id="actualCashAmount" type="number" min="0" step="0.01" />
+            </label>
+            <label id="actualPosLabel">Actual POS (Swipe / EcoCash) Amount
+              <input id="actualPosAmount" type="number" min="0" step="0.01" />
+            </label>
+            <label id="actualEcocashLabel" class="legacy-ecocash">Actual EcoCash Amount
+              <input id="actualEcocashAmount" type="number" min="0" step="0.01" />
+            </label>
+          </div>
+          <button onclick="recordCashup()">Record Cashup</button>
+          <div id="cashupMessage"></div>
+
+          <div class="supervisor-only supervisor-cashup-section">
+            <h3>Supervisor Cashup Control</h3>
+            <p class="muted">Recorded cashups can be concluded one by one or all at once. Concluded cashups disappear from this pending list until new transactions are made.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Cashier</th><th>Status</th><th>Cash</th><th>POS (Swipe / EcoCash)</th><th>Total</th><th>Difference</th><th>Action</th></tr>
+                </thead>
+                <tbody id="supervisorCashupTable"></tbody>
+              </table>
+            </div>
+            <button onclick="concludeAllCashups()">Conclude All Recorded Cashups</button>
+            <div id="supervisorCashupMessage"></div>
           </div>
         </div>
       </section>
 
-<section class="section services" id="services">
-        <div class="section-heading">
-          <p class="eyebrow">Services</p>
-          <h2>Digital Solutions That Drive Real Results</h2>
-          <p>Select a service to view its packages, features, process, and support options.</p>
+      <section id="pastelPanel" class="panel">
+        <div class="page-title">
+          <h1>Pastel Auto Sync</h1>
+          <p>Sales and stock movements are queued for Sage 50cloud Pastel.</p>
         </div>
-        <div class="service-grid">
-          <a class="service-card" href="starlink.html" aria-label="View Starlink WiFi solutions">
-            <span class="service-icon wifi" aria-hidden="true"></span><h3>Starlink WiFi Solutions</h3>
-            <p>Starlink packages, professional installation, setup, WiFi optimisation, and after-sales support.</p><span class="service-arrow">View service →</span>
-          </a>
-          <a class="service-card" href="web-development.html" aria-label="View web development service">
-            <span class="service-icon web" aria-hidden="true"></span><h3>Web Development</h3>
-            <p>Professional websites and web systems built for speed, credibility, sales, and business growth.</p><span class="service-arrow">View service →</span>
-          </a>
-          <a class="service-card" href="mobile-development.html" aria-label="View mobile development service">
-            <span class="service-icon mobile" aria-hidden="true"></span><h3>Mobile Development</h3>
-            <p>Practical Android and mobile applications designed around your business workflow and users.</p><span class="service-arrow">View service →</span>
-          </a>
-          <a class="service-card" href="whatsapp-chatbots.html" aria-label="View WhatsApp chatbots and business automation service">
-            <span class="service-icon chatbot" aria-hidden="true"></span><h3>WhatsApp Chatbots &amp; Business Automation</h3>
-            <p>Automate customer enquiries, quotations, bookings, orders, follow-ups, and support directly through WhatsApp.</p><span class="service-arrow">View service →</span>
-          </a>
-          <a class="service-card" href="cctv-security.html" aria-label="View CCTV and security systems service">
-            <span class="service-icon camera" aria-hidden="true"></span><h3>CCTV &amp; Security Systems</h3>
-            <p>Reliable surveillance, remote monitoring, installation, maintenance, and security system upgrades.</p><span class="service-arrow">View service →</span>
-          </a>
-          <a class="service-card" href="it-support.html" aria-label="View IT support service">
-            <span class="service-icon support" aria-hidden="true"></span><h3>IT Support</h3>
-            <p>Remote and on-site support for computers, networks, software, business systems, and troubleshooting.</p><span class="service-arrow">View service →</span>
-          </a>
+        <div class="card pastel-card">
+          <h2>Pastel Sync Status</h2>
+          <div class="metrics">
+            <div class="metric">Queue<strong id="pastelQueueAvailable">Installed</strong></div>
+            <div class="metric">Pending<strong id="pastelPendingCount">0</strong></div>
+            <div class="metric">Synced<strong id="pastelSyncedCount">0</strong></div>
+            <div class="metric">Failed<strong id="pastelFailedCount">0</strong></div>
+          </div>
+          <button onclick="refreshPastelSyncStatus()">Refresh Status</button>
+          <div id="pastelSyncMessage"></div>
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Status</th><th>Attempts</th><th>Action / Error</th></tr></thead>
+            <tbody id="pastelSyncTable"></tbody>
+          </table>
         </div>
-      </section>
-
-      <section class="about-band" id="about">
-        <div>
-          <p class="eyebrow">About AriQ</p>
-          <h2>We Are AriQ</h2>
-          <p>
-            AriQ Digital Solutions delivers innovative technology and business solutions that empower individuals and
-            organizations to thrive in a connected world. From Starlink installations and networking services to business
-            support and registration assistance, we provide reliable, efficient, and future-ready solutions tailored to
-            your needs.
-          </p>
-          <ul class="about-highlights">
-            <li>Reliable Service</li>
-            <li>Fast Response</li>
-            <li>Customer-Focused Solutions</li>
-          </ul>
-          <p class="tagline">Connecting People. Empowering Business. Shaping the Future.</p>
-          <a class="button secondary" href="#contact">Learn More</a>
-        </div>
-        <div class="brand-showcase" aria-hidden="true">
-          <img src="ariq-logo-transparent.png" alt="" />
+        <div class="card pastel-card">
+          <h2>Manual Pastel CSV Export</h2>
+          <div class="form-grid">
+            <label>From Date<input id="pastelFromDate" type="date" /></label>
+            <label>To Date<input id="pastelToDate" type="date" /></label>
+            <label>Customer Code<input id="pastelCustomerCode" type="text" value="CASH001" /></label>
+            <label>Sales Account<input id="pastelSalesAccount" type="text" value="4000/000" /></label>
+            <label>Tax Code<input id="pastelTaxCode" type="text" value="0" /></label>
+            <label>Document Prefix<input id="pastelDocPrefix" type="text" value="MIL" /></label>
+          </div>
+          <div class="metrics">
+            <div class="metric">Sales Lines<strong id="pastelSalesCount">0</strong></div>
+            <div class="metric">Revenue<strong id="pastelRevenue">$0.00</strong></div>
+            <div class="metric">Products<strong id="pastelProductCount">0</strong></div>
+            <div class="metric">Movements<strong id="pastelMovementCount">0</strong></div>
+          </div>
+          <button onclick="exportPastelSalesInvoices()">Export Sales Invoices CSV</button>
+          <button onclick="exportPastelDailyJournal()">Export Daily Journal CSV</button>
+          <button onclick="exportPastelProducts()">Export Products CSV</button>
+          <button onclick="exportPastelStockMovements()">Export Stock Movements CSV</button>
+          <button onclick="exportPastelBundle()">Export Full Bundle</button>
+          <div id="pastelMessage"></div>
+          <table>
+            <thead><tr><th>Date</th><th>Document</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th></tr></thead>
+            <tbody id="pastelPreviewTable"></tbody>
+          </table>
         </div>
       </section>
 
-      <section class="section portfolio" id="portfolio">
-        <div class="section-heading">
-          <p class="eyebrow">Portfolio</p>
-          <h2>Trusted Technology Support Across Zimbabwe</h2>
-          <p>Practical results for homes, businesses, farms, and remote teams that need dependable connectivity and support.</p>
+      <section id="movementsPanel" class="panel">
+        <div class="page-title">
+          <h1>Stock Movements</h1>
+          <p>Audit trail for stock received, deducted, sold, and stock take adjustments.</p>
         </div>
-        <div class="portfolio-grid">
-          <article><span>100+ Customers Assisted</span><h3>From consultation and supply to installation, support, and maintenance.</h3></article>
-          <article><span>24-Hour Starlink Installations</span><h3>Fast deployment and activation to get customers connected quickly.</h3></article>
-          <article><span>Nationwide Service Coverage</span><h3>Supporting customers in urban, rural, and remote locations throughout Zimbabwe.</h3></article>
+        <div class="card">
+          <div class="period-buttons">
+            <button onclick="renderMovementReports('daily')">Daily</button>
+            <button onclick="renderMovementReports('weekly')">Weekly</button>
+            <button onclick="renderMovementReports('monthly')">Monthly</button>
+          </div>
+          <div id="movementGroupedReport"></div>
         </div>
-        <a class="button primary gallery-button" href="gallery.html">Gallery</a>
+      </section>
+
+      <section id="settingsPanel" class="panel">
+        <div class="page-title">
+          <h1>Settings</h1>
+          <p>Supervisor-only product price and exchange-rate controls.</p>
+        </div>
+        <div class="card">
+          <h2>Change Product Price</h2>
+          <p class="muted">Changing product prices requires supervisor password confirmation.</p>
+          <label>Product
+            <select id="priceProduct" onchange="onPriceProductChange()"></select>
+          </label>
+          <div class="form-grid">
+            <label>Current Selling Price ($)
+              <input id="currentSellingPrice" type="number" disabled />
+            </label>
+            <label>New Selling Price ($)
+              <input id="newSellingPrice" type="number" min="0" step="0.01" />
+            </label>
+          </div>
+          <button onclick="changeProductPrice()">Change Product Price</button>
+          <div id="priceSettingsMessage"></div>
+        </div>
+        <div class="card">
+          <h2>Update Currency Rates</h2>
+          <p class="muted">USD remains fixed at 1. Only ZAR and ZWG can be updated.</p>
+          <div class="form-grid">
+            <label>USD Rate
+              <input id="usdRate" type="number" value="1" disabled />
+            </label>
+            <label>USD : ZAR
+              <input id="usdZarRate" type="number" min="0" step="0.0001" />
+            </label>
+            <label>USD : ZWG
+              <input id="usdZwgRate" type="number" min="0" step="0.0001" />
+            </label>
+          </div>
+          <button onclick="updateRates()">Update Rates</button>
+          <div id="rateSettingsMessage"></div>
+        </div>
       </section>
 
 
-      <section class="section blog-preview" id="blog">
-        <div class="section-heading">
-          <p class="eyebrow">Client Resources</p>
-          <h2>Useful Information From AriQ</h2>
-          <p>Practical guides, service advice, and technology tips to help clients make informed decisions.</p>
+      <section id="helpPanel" class="panel">
+        <div class="page-title">
+          <h1>Help &amp; Updates</h1>
+          <p>System changes, new functionality, and quick instructions for cashiers and supervisors.</p>
         </div>
-        <div class="blog-grid" data-blog-preview aria-live="polite"></div>
-        <a class="button primary gallery-button" href="blog.html">View All Articles</a>
-      </section>
-      <section class="section faq" id="faq">
-        <div class="section-heading">
-          <p class="eyebrow">Frequently Asked Questions</p>
-          <h2>Frequently Asked Questions</h2>
-          <p>Quick answers about AriQ Digital Solutions services, payments, installations, and support.</p>
-        </div>
-        <div class="faq-list" data-faq-list>
-          <article><h3>1. What services does AriQ Digital Solutions offer?</h3><p>We provide Starlink solutions, website design, mobile applications, WhatsApp chatbots, business automation, IT support, CCTV installation, business registration assistance, and other technology services across Zimbabwe.</p></article>
-          <article><h3>2. How do I pay for services or products?</h3><p>At AriQ Digital Solutions, we do not require upfront payment for most services. You only pay after we have delivered the work and you are satisfied with the results, giving you confidence and peace of mind throughout the process.</p></article>
-          <article><h3>3. Do you supply and install Starlink kits?</h3><p>Yes. We supply, install, activate, and provide support for Starlink systems for homes, businesses, farms, and remote locations. In most cases, installations are completed within 24 hours of your order being placed, ensuring you get connected as quickly as possible.</p></article>
-          <article class="faq-extra" hidden><h3>4. Do you offer services outside Bulawayo?</h3><p>Yes. We serve customers nationwide across Zimbabwe.</p></article>
-          <article class="faq-extra" hidden><h3>5. How long does website development take?</h3><p>Most websites are completed within 1-4 weeks, depending on the project's size and requirements.</p></article>
-          <article class="faq-extra" hidden><h3>6. Can you help register my company or business?</h3><p>Yes. We assist with company registrations and other business support services.</p></article>
-          <article class="faq-extra" hidden><h3>7. Do you provide ongoing IT support?</h3><p>Yes. We offer remote and on-site technical support for individuals and businesses.</p></article>
-          <article class="faq-extra" hidden><h3>8. What types of CCTV systems do you install?</h3><p>We install CCTV solutions for homes, offices, shops, schools, warehouses, and other commercial properties.</p></article>
-          <article class="faq-extra" hidden><h3>9. Do you offer maintenance and after-sales support?</h3><p>Yes. We provide ongoing support, maintenance, and troubleshooting for services and solutions we deliver.</p></article>
-          <article class="faq-extra" hidden><h3>10. How can I request a quotation?</h3><p>You can contact us by phone, WhatsApp, email, or through our website contact form for a free, no-obligation quotation.</p></article>
-          <article class="faq-extra" hidden><h3>11. How do I get started?</h3><p>Simply contact our team, and we will discuss your requirements and recommend the best solution for your needs.</p></article>
-        </div>
-        <button class="button primary faq-toggle" type="button" data-faq-toggle aria-expanded="false">More Questions</button>
-      </section>
 
-      <section class="contact-band" id="contact">
-        <div>
-          <p class="eyebrow">Contact Us</p>
-          <h2>Ready to build something useful?</h2>
-          <p>Tell us what you are working on. We will help shape the right digital solution for your next stage.</p>
-          <div class="contact-numbers" aria-label="Phone numbers">
-            <a href="tel:+263781385609">+263 781 385 609</a>
-            <a href="tel:+263777337790">+263 777 337 790</a>
+        <div class="help-grid">
+          <div class="card help-card">
+            <h2>New Features</h2>
+            <ul>
+              <li><strong>Split Payment:</strong> USD and ZWG sales can now be paid using cash and POS (Swipe / EcoCash) together on the same receipt.</li>
+              <li><strong>Automatic Receipt Printing:</strong> completed sales now send a receipt print command with sale details and a fiscalisation QR-code area at the bottom.</li>
+              <li><strong>Transfer Receipt Printing:</strong> transferred transactions print the barcode receipt in the background instead of opening a separate print screen.</li>
+              <li><strong>Cashup Signatures:</strong> cashup printouts now include cashier and supervisor signature spaces.</li>
+            </ul>
+          </div>
+
+          <div class="card help-card">
+            <h2>System Changes</h2>
+            <ul>
+              <li>Cashier users no longer see the dashboard panel; they start directly from Record Sale.</li>
+              <li>The Record Sale page layout has been reverted to the previous setup: Add Product at the top, with Current Receipt and Payment below.</li>
+              <li>ZAR remains cash only; USD and ZWG allow split payment by cash and POS (Swipe / EcoCash).</li>
+              <li>Transaction success now displays a simple success message and then prints the receipt.</li>
+            </ul>
+          </div>
+
+          <div class="card help-card">
+            <h2>How to Use</h2>
+            <ol>
+              <li><strong>Record sale:</strong> use the Add Product panel at the top, select product, enter quantity, click Add / Enter, then repeat for all products.</li>
+              <li><strong>Split payment:</strong> choose USD or ZWG, enter the cash amount and POS (Swipe / EcoCash) amount, then click Record Sale. The combined amount must cover the receipt total.</li>
+              <li><strong>ZAR sale:</strong> choose ZAR and enter cash only. POS / EcoCash is disabled for ZAR.</li>
+              <li><strong>Transfer transaction:</strong> click Transfer Transaction, choose Transfer Transaction, and the barcode slip prints automatically. The receiving cashier scans or types the code under Receive Transaction.</li>
+              <li><strong>Cashup:</strong> select currency, compare system totals against counted money, record cashup, then another supervisor concludes and signs the printout.</li>
+            </ol>
+          </div>
+
+          <div class="card help-card">
+            <h2>Important Notices</h2>
+            <ul>
+              <li>Normal browsers may still show the system print dialog unless the till computer is configured for kiosk/silent printing.</li>
+              <li>The fiscalisation QR area is ready for ZIMRA integration. Once the real ZIMRA response is connected, the official fiscal QR data should be passed into the receipt.</li>
+              <li>A supervisor cannot conclude their own cashup; another supervisor must conclude and sign it.</li>
+              <li>Always run the latest Supabase SQL patch before uploading the new POS files.</li>
+            </ul>
+          </div>
+
+          <div class="card help-card version-card">
+            <h2>Version History</h2>
+            <table>
+              <thead><tr><th>Version</th><th>Date</th><th>Changes</th></tr></thead>
+              <tbody>
+                <tr><td>v1.7</td><td>26 June 2026</td><td>Removed the Do Quotation feature from both cashier and supervisor menus.</td></tr>
+                <tr><td>v1.6</td><td>26 June 2026</td><td>Record Sale page layout reverted to the previous setup while keeping split payments, receipt printing, and cashup signature features.</td></tr>
+                <tr><td>v1.5</td><td>26 June 2026</td><td>Split payments for USD/ZWG, automatic receipt printing, fiscal QR-code receipt area, transfer barcode background print, and cashup signature lines.</td></tr>
+                <tr><td>v1.4</td><td>26 June 2026</td><td>Help &amp; Updates, cashier dashboard hidden, receipt quantity removal, compact sales layout, login cleanup, and transfer-code fix.</td></tr>
+                <tr><td>v1.3</td><td>26 June 2026</td><td>Cancel transaction, transfer transaction, grouped stock movements, POS (Swipe / EcoCash), ZAR cash-only, and cashup printouts.</td></tr>
+                <tr><td>v1.2</td><td>24 June 2026</td><td>Multi-product receipt sales, currency selection, payment validation, cashup reports, product price changes, and currency-rate updates.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <form class="contact-form" action="mailto:support@ariq.co.zw" method="post" enctype="text/plain" data-contact-form>
-          <label>Name<input type="text" name="name" autocomplete="name" placeholder="Your name" /></label>
-          <label>Email<input type="email" name="email" autocomplete="email" placeholder="you@example.com" /></label>
-          <label>Message<textarea name="message" rows="4" placeholder="What would you like to build?"></textarea></label>
-          <button class="button primary" type="submit">Send Message</button>
-        </form>
+      </section>
+
+      <section id="passwordPanel" class="panel">
+        <div class="page-title">
+          <h1>User Administration</h1>
+          <p>Update your login password securely.</p>
+        </div>
+        <div class="card">
+          <label>Old Password
+            <input id="oldPassword" type="password" autocomplete="current-password" />
+          </label>
+          <label>New Password
+            <input id="newPassword" type="password" autocomplete="new-password" />
+          </label>
+          <label>Confirm New Password
+            <input id="confirmNewPassword" type="password" autocomplete="new-password" />
+          </label>
+          <button onclick="changePassword()">Change Password</button>
+          <div id="passwordMessage"></div>
+        </div>
       </section>
     </main>
-    
-<section class="branham-quote">
-    <p class="quote-text">
-        “And we're bound to win if we trust in Him Who will not fail us.”
-    </p>
+  </div>
 
-    <p class="quote-reference">
-        50-0815 "Who Is God?"<br>
-        Rev. William Marrion Branham
-    </p>
-</section>
-    
-    <footer class="site-footer">
-      <div class="footer-brand">
-        <a class="brand" href="index.html#home" aria-label="AriQ Digital Solutions home">
-          <img src="ariq-logo-cropped.png" alt="AriQ Digital Solutions" />
-        </a>
-        <p>Connecting people. Empowering business. Shaping the future with technology and innovation.</p>
-      </div>
-      <div>
-        <h2>Quick Links</h2>
-        <a href="index.html#home">Home</a><a href="index.html#about">About</a><a href="index.html#services">Services</a>
-        <a href="index.html#portfolio">Portfolio</a><a href="blog.html">Blog</a><a href="index.html#faq">FAQ</a><a href="index.html#contact">Contact</a>
-      </div>
-      <div>
-        <h2>Services</h2>
-        <a href="starlink.html">Starlink WiFi Solutions</a><a href="web-development.html">Web Development</a>
-        <a href="mobile-development.html">Mobile Development</a><a href="whatsapp-chatbots.html">WhatsApp Chatbots &amp; Business Automation</a>
-        <a href="cctv-security.html">CCTV &amp; Security Systems</a><a href="it-support.html">IT Support</a>
-      </div>
-      <div>
-        <h2>Contact</h2>
-        <p>+263 781 385 609</p><p>+263 774 715 706</p><p>+263 782 462 535</p><p>+263 777 337 790</p>
-        <p>support@ariq.co.zw</p><p>Bulawayo, Zimbabwe</p>
-      </div>
-      <div class="footer-bottom">
-        <p>Copyright 2026 AriQ Digital Solutions. All rights reserved.</p>
-        <p>Privacy Policy &nbsp; | &nbsp; Terms &amp; Conditions</p>
-      </div>
-    </footer>
-    <script src="blog.js"></script>
-    <script src="script.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
 </html>

@@ -1,0 +1,81 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AriQ Blog Post Builder</title>
+<meta name="description" content="Local blog post preparation tool for the AriQ Digital Solutions static website.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://ariqdigital.co.zw/tools/blog-post-builder.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AriQ Digital Solutions">
+<meta property="og:title" content="AriQ Blog Post Builder">
+<meta property="og:description" content="Local blog post preparation tool for the AriQ Digital Solutions static website.">
+<meta property="og:url" content="https://ariqdigital.co.zw/tools/blog-post-builder.html">
+<meta property="og:image" content="https://ariqdigital.co.zw/assets/images/brand/ariq-brand.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AriQ Blog Post Builder">
+<meta name="twitter:description" content="Local blog post preparation tool for the AriQ Digital Solutions static website.">
+<meta name="twitter:image" content="https://ariqdigital.co.zw/assets/images/brand/ariq-brand.png">
+<meta name="theme-color" content="#07152f">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/images/brand/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/images/brand/apple-touch-icon.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="stylesheet" href="../assets/css/styles.css">
+
+</head><body data-root=".." class="builder-page"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="site-header" data-header>
+  <div class="header-inner container">
+    <a class="brand" href="../index.html" aria-label="AriQ Digital Solutions home">
+      <img src="../assets/images/brand/ariq-logo-transparent.png" alt="AriQ Digital Solutions" width="198" height="86">
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu" data-nav-toggle><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation" data-nav><a href="../index.html" class="nav-link">Home</a><a href="../index.html#about" class="nav-link">About</a><a href="../index.html#services" class="nav-link">Services</a><a href="../services/starlink.html#packages" class="nav-link">Starlink Packages</a><a href="../gallery.html" class="nav-link">Projects</a><a href="../blog.html" class="nav-link active" aria-current="page">Blog</a><a href="../contact.html" class="nav-link">Contact</a></nav>
+    <a class="button button-sm button-primary header-cta" href="../contact.html">Get a Quote</a>
+  </div>
+</header><main id="main-content">
+<section class="page-hero compact-hero"><div class="container page-hero-grid"><div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span>/</span><a href="../blog.html">Blog</a><span>/</span><span>Post builder</span></nav><p class="eyebrow">Local publishing tool</p><h1>Prepare a new blog article</h1><p class="hero-copy">This private, unlinked tool creates a safe article object that you can paste into the blog data file. It does not request or store a GitHub password or token.</p></div><div class="hero-panel"><h2>How publishing works</h2><ol><li>Upload the article image to the project.</li><li>Complete this form and copy the generated object.</li><li>Paste it into <code>assets/js/blog-data.js</code>.</li><li>Commit and publish through GitHub Pages.</li></ol></div></div></section>
+<section class="section"><div class="container builder-layout"><form class="form-card" data-post-builder>
+  <div class="section-heading align-left"><p class="eyebrow">Article details</p><h2>Create the post object</h2><p>Nothing is uploaded automatically. The output remains in your browser until you copy it.</p></div>
+  <div class="form-grid">
+    <div class="field field-full"><label for="builder-title">Article title *</label><input id="builder-title" name="title" required minlength="8"></div>
+    <div class="field"><label for="builder-slug">URL slug *</label><input id="builder-slug" name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="my-article-title"></div>
+    <div class="field"><label for="builder-date">Publication date *</label><input id="builder-date" name="date" type="date" required></div>
+    <div class="field"><label for="builder-author">Author *</label><input id="builder-author" name="author" value="AriQ Digital Solutions" required></div>
+    <div class="field"><label for="builder-category">Category *</label><select id="builder-category" name="category" required><option>Starlink</option><option>Internet and Wi-Fi</option><option>CCTV and security</option><option>Website tips</option><option>IT support</option><option>Digital marketing</option><option>Vehicle licensing</option><option>Business technology</option></select></div>
+    <div class="field field-full"><label for="builder-image">Featured image path *</label><input id="builder-image" name="image" value="assets/images/gallery/full/project-01.webp" required><small>Use a project-relative path. Upload the image first.</small></div>
+    <div class="field field-full"><label for="builder-summary">Short summary *</label><textarea id="builder-summary" name="summary" required minlength="40" maxlength="240" rows="3"></textarea></div>
+    <div class="field field-full"><label for="builder-content">Article content *</label><textarea id="builder-content" name="content" required minlength="100" rows="14" placeholder="Write paragraphs normally. Start a heading on its own line with ##, for example:&#10;&#10;## Check the installation area&#10;The first paragraph under the heading…"></textarea><small>Use <strong>## Heading</strong> on its own line for section headings. Blank lines separate paragraphs.</small></div>
+    <div class="field field-full"><label for="builder-tags">Search tags</label><input id="builder-tags" name="tags" placeholder="Starlink Zimbabwe, Wi-Fi, installation"></div>
+    <label class="consent field-full"><input type="checkbox" name="featured"> Mark as the featured article</label>
+  </div>
+  <div class="form-status" data-builder-status role="status" aria-live="polite"></div>
+  <div class="form-actions"><button class="button button-primary" type="submit">Generate post object</button><button class="button button-secondary" type="reset">Clear form</button></div>
+</form>
+<aside class="builder-output"><div class="aside-card"><h2>Generated output</h2><p>Paste this object inside the <code>window.ARIQ_BLOG_POSTS = [ ... ]</code> array and add a comma between posts.</p><textarea data-builder-output readonly rows="28" spellcheck="false" aria-label="Generated blog post object"></textarea><button class="button button-primary button-block" type="button" data-copy-output>Copy output</button></div><div class="aside-card warning-card"><h2>Security note</h2><p>Never paste a GitHub token, password, API key or private credential into a public website file. Use the GitHub website or desktop application to upload and commit changes.</p></div></aside></div></section>
+</main><footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-about">
+      <a class="footer-logo" href="../index.html" aria-label="AriQ Digital Solutions home"><img src="../assets/images/brand/ariq-logo-transparent.png" alt="AriQ Digital Solutions" width="198" height="86"></a>
+      <p>Reliable connectivity, security, web and technology support for homes and businesses across Zimbabwe.</p>
+      <p class="footer-tagline">CONNECT • SECURE • GROW</p>
+      <div class="social-links" data-social-links aria-label="AriQ social media links"></div>
+    </div>
+    <div><h2>Quick Links</h2><a href="../index.html">Home</a><a href="../index.html#about">About</a><a href="../gallery.html">Projects</a><a href="../blog.html">Blog</a><a href="../contact.html">Contact</a></div>
+    <div><h2>Services</h2><a href="../services/starlink.html">Starlink</a><a href="../services/network-solutions.html">Network Solutions</a><a href="../services/cctv-security.html">CCTV & Security</a><a href="../services/website-design.html">Website Design</a><a href="../services/it-support.html">IT Support</a><a href="../services/digital-marketing.html">Digital Marketing</a><a href="../services/vehicle-licensing.html">Vehicle Licensing</a></div>
+    <div><h2>Contact</h2>
+      <a data-contact-phone href="tel:+263781385609">+263 78 138 5609</a>
+      <a data-contact-whatsapp href="https://wa.me/263781385609" target="_blank" rel="noopener">WhatsApp Us</a>
+      <a data-contact-email href="mailto:support@ariq.co.zw">support@ariq.co.zw</a>
+      <p data-contact-location>Bulawayo, Zimbabwe</p>
+      <p data-contact-hours>Monday–Saturday, 08:00–17:30</p>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    <p>© <span data-current-year></span> AriQ Digital Solutions. All rights reserved.</p>
+    <nav aria-label="Legal"><a href="../policies/privacy.html">Privacy</a><a href="../policies/terms.html">Terms</a><a href="../policies/cookie-notice.html">Cookies</a><a href="../policies/disclaimer.html">Disclaimer</a></nav>
+  </div>
+</footer>
+<a class="floating-whatsapp" data-floating-whatsapp href="https://wa.me/263781385609" target="_blank" rel="noopener" aria-label="Chat with AriQ Digital Solutions on WhatsApp"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4.7A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 8.5c.8 3 2 4.2 5 5l1.2-1.2 2 .5v2c0 .7-.6 1.2-1.3 1.2-4.7-.4-7-2.7-7.4-7.4 0-.7.5-1.3 1.2-1.3h2l.5 2z"/></svg><span>WhatsApp</span></a>
+<button class="back-to-top" type="button" aria-label="Back to top" data-back-to-top><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+<div class="cookie-banner" data-cookie-banner hidden role="dialog" aria-live="polite" aria-label="Cookie notice"><p>We use essential browser storage to remember your cookie choice and improve site usability. <a href="../policies/cookie-notice.html">Read the cookie notice</a>.</p><div><button class="button button-sm button-primary" type="button" data-cookie-accept>Accept</button><button class="button button-sm button-ghost" type="button" data-cookie-dismiss>Dismiss</button></div></div><script src="../assets/js/config.js"></script>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/js/blog-builder.js"></script></body></html>

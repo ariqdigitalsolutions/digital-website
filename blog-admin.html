@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Blog Publisher | AriQ Digital Solutions</title><meta name="description" content="Private AriQ Digital Solutions blog publishing tool." /><meta name="robots" content="noindex,nofollow" /><link rel="stylesheet" href="styles.css" /></head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="index.html#home" aria-label="AriQ Digital Solutions home">
+        <img src="ariq-logo-transparent.png" alt="AriQ Digital Solutions" />
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="site-nav" data-nav><a href="index.html#home">Home</a><a href="index.html#about">About</a><a href="index.html#services">Services</a><a href="index.html#portfolio">Portfolio</a><a href="blog.html" class="active">Blog</a><a href="index.html#faq">FAQ</a><a href="index.html#contact">Contact</a></nav>
+      <a class="header-cta" href="index.html#contact">Get Started</a>
+    </header>
+    <main class="admin-main"><section class="admin-panel"><div class="section-heading"><p class="eyebrow">Private Publishing Tool</p><h1>Publish a Blog Article</h1><p>This page commits the article and optional image directly to your GitHub repository. Your token is used only in this browser session and is not saved.</p></div>
+      <form class="admin-form" data-blog-admin>
+        <fieldset><legend>GitHub connection</legend><div class="admin-grid"><label>Repository owner<input name="owner" required placeholder="GitHub username or organisation" /></label><label>Repository name<input name="repo" required placeholder="digital-website-main" /></label><label>Branch<input name="branch" required value="main" /></label><label>Fine-grained GitHub token<input name="token" type="password" required autocomplete="off" placeholder="Token with Contents: Read and write" /></label></div></fieldset>
+        <fieldset><legend>Article details</legend><div class="admin-grid"><label>Article title<input name="title" required /></label><label>Category<input name="category" required placeholder="Starlink, Security, Websites..." /></label><label>Publish date<input name="date" type="date" required /></label><label>Read time<input name="readTime" value="4 min read" required /></label></div><label>Short summary<textarea name="excerpt" rows="3" required></textarea></label><label>Article content<textarea name="content" rows="16" required placeholder="Use ## for headings and - for bullet points."></textarea></label><label>Optional cover image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label></fieldset>
+        <label class="admin-confirm"><input type="checkbox" name="confirm" required /> I have reviewed the article and understand that publishing creates a commit in the selected GitHub repository.</label>
+        <button class="button primary" type="submit">Publish Article</button><p class="admin-status" data-admin-status role="status"></p>
+      </form>
+    </section></main>
+    <script src="blog-admin.js"></script><script src="script.js"></script>
+  </body>
+</html>

@@ -15,7 +15,16 @@ function formatDate(value) {
 function renderInlineMarkdown(text) {
   return escapeHtml(text)
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`(.+?)`/g, "<code>$1</code>")
     .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+function renderTable(lines) {
+  const rows = lines.map((line) => line.trim().replace(/^\||\|$/g, "").split("|").map((cell) => cell.trim()));
+  if (rows.length < 2) return "";
+  const headers = rows[0];
+  const body = rows.slice(2);
+  return `<div class="article-table-wrap"><table><thead><tr>${headers.map((cell) => `<th>${renderInlineMarkdown(cell)}</th>`).join("")}</tr></thead><tbody>${body.map((row) => `<tr>${headers.map((_, index) => `<td>${renderInlineMarkdown(row[index] || "")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function renderMarkdown(markdown = "") {
@@ -23,6 +32,8 @@ function renderMarkdown(markdown = "") {
   const blocks = [];
   let paragraph = [];
   let list = [];
+  let orderedList = [];
+  let table = [];
   const flushParagraph = () => {
     if (paragraph.length) blocks.push(`<p>${renderInlineMarkdown(paragraph.join(" "))}</p>`);
     paragraph = [];
@@ -31,15 +42,35 @@ function renderMarkdown(markdown = "") {
     if (list.length) blocks.push(`<ul>${list.map((item) => `<li>${renderInlineMarkdown(item)}</li>`).join("")}</ul>`);
     list = [];
   };
-  lines.forEach((line) => {
+  const flushOrderedList = () => {
+    if (orderedList.length) blocks.push(`<ol>${orderedList.map((item) => `<li>${renderInlineMarkdown(item)}</li>`).join("")}</ol>`);
+    orderedList = [];
+  };
+  const flushTable = () => {
+    if (table.length) blocks.push(renderTable(table));
+    table = [];
+  };
+  const flushAll = () => { flushParagraph(); flushList(); flushOrderedList(); flushTable(); };
+
+  lines.forEach((line, index) => {
     const value = line.trim();
-    if (!value) { flushParagraph(); flushList(); return; }
-    if (value.startsWith("## ")) { flushParagraph(); flushList(); blocks.push(`<h2>${renderInlineMarkdown(value.slice(3))}</h2>`); return; }
-    if (value.startsWith("### ")) { flushParagraph(); flushList(); blocks.push(`<h3>${renderInlineMarkdown(value.slice(4))}</h3>`); return; }
-    if (value.startsWith("- ")) { flushParagraph(); list.push(value.slice(2)); return; }
-    flushList(); paragraph.push(value);
+    if (!value) { flushAll(); return; }
+    const next = String(lines[index + 1] || "").trim();
+    if (value.startsWith("|") && value.endsWith("|")) {
+      flushParagraph(); flushList(); flushOrderedList(); table.push(value);
+      if (!(next.startsWith("|") && next.endsWith("|"))) flushTable();
+      return;
+    }
+    flushTable();
+    if (value.startsWith("## ")) { flushAll(); blocks.push(`<h2>${renderInlineMarkdown(value.slice(3))}</h2>`); return; }
+    if (value.startsWith("### ")) { flushAll(); blocks.push(`<h3>${renderInlineMarkdown(value.slice(4))}</h3>`); return; }
+    if (value === "---") { flushAll(); blocks.push("<hr />"); return; }
+    if (value.startsWith("> ")) { flushAll(); blocks.push(`<blockquote>${renderInlineMarkdown(value.slice(2))}</blockquote>`); return; }
+    if (value.startsWith("- ")) { flushParagraph(); flushOrderedList(); list.push(value.slice(2)); return; }
+    if (/^\d+\.\s/.test(value)) { flushParagraph(); flushList(); orderedList.push(value.replace(/^\d+\.\s/, "")); return; }
+    flushList(); flushOrderedList(); paragraph.push(value);
   });
-  flushParagraph(); flushList();
+  flushAll();
   return blocks.join("");
 }
 
@@ -51,7 +82,8 @@ async function loadPosts() {
 }
 
 function articleCard(post) {
-  const image = post.image ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy" />` : `<div class="blog-card-placeholder" aria-hidden="true"><span>${escapeHtml(post.category || "AriQ")}</span></div>`;
+  const imageAlt = post.imageAlt || post.title;
+  const image = post.image ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(imageAlt)}" loading="lazy" />` : `<div class="blog-card-placeholder" aria-hidden="true"><span>${escapeHtml(post.category || "AriQ")}</span></div>`;
   return `<article class="blog-card"><a class="blog-card-media" href="blog-post.html?post=${encodeURIComponent(post.slug)}">${image}</a><div class="blog-card-body"><div class="blog-meta"><span>${escapeHtml(post.category || "General")}</span><time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time></div><h2><a href="blog-post.html?post=${encodeURIComponent(post.slug)}">${escapeHtml(post.title)}</a></h2><p>${escapeHtml(post.excerpt)}</p><div class="blog-card-footer"><small>${escapeHtml(post.readTime || "Article")}</small><a href="blog-post.html?post=${encodeURIComponent(post.slug)}">Read article →</a></div></div></article>`;
 }
 
@@ -83,8 +115,11 @@ async function initialiseBlog() {
       if (!post) { postContainer.innerHTML = '<a class="back-link" href="blog.html">← Back to Blog</a><div class="article-error"><h1>Article not found</h1><p>The article may have been moved or removed.</p></div>'; return; }
       document.title = `${post.title} | AriQ Digital Solutions`;
       document.querySelector("[data-post-description]")?.setAttribute("content", post.excerpt);
-      const cover = post.image ? `<img class="article-cover" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />` : "";
-      postContainer.innerHTML = `<a class="back-link" href="blog.html">← Back to Blog</a><header class="article-header"><p class="eyebrow">${escapeHtml(post.category || "Client Resource")}</p><h1>${escapeHtml(post.title)}</h1><p class="article-excerpt">${escapeHtml(post.excerpt)}</p><div class="article-meta"><time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time><span>${escapeHtml(post.readTime || "Article")}</span></div></header>${cover}<div class="article-content">${renderMarkdown(post.content)}</div><aside class="article-cta"><h2>Need help with this service?</h2><p>Speak to AriQ Digital Solutions for practical advice, a site assessment, or a quotation.</p><a class="button primary" href="https://wa.me/263781385609?text=${encodeURIComponent(`Hello AriQ, I read your article: ${post.title}. I would like more information.`)}">Chat on WhatsApp</a></aside>`;
+      const cover = post.image ? `<img class="article-cover" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.imageAlt || post.title)}" />` : "";
+      const serviceButton = post.serviceUrl ? `<a class="button secondary" href="${escapeHtml(post.serviceUrl)}">View ${escapeHtml(post.serviceName || "service")}</a>` : "";
+      const related = posts.filter((item) => item.category === post.category && item.slug !== post.slug).slice(0, 2);
+      const relatedSection = related.length ? `<section class="related-articles"><div class="section-heading"><div><p class="eyebrow">Related Resources</p><h2>More about ${escapeHtml(post.category)}</h2></div></div><div class="blog-grid related-grid">${related.map(articleCard).join("")}</div></section>` : "";
+      postContainer.innerHTML = `<a class="back-link" href="blog.html">← Back to Blog</a><header class="article-header"><p class="eyebrow">${escapeHtml(post.category || "Client Resource")}</p><h1>${escapeHtml(post.title)}</h1><p class="article-excerpt">${escapeHtml(post.excerpt)}</p><div class="article-meta"><time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time><span>${escapeHtml(post.readTime || "Article")}</span></div></header>${cover}<div class="article-content">${renderMarkdown(post.content)}</div><aside class="article-cta"><div><h2>Need help with this service?</h2><p>Speak to AriQ Digital Solutions for practical advice, a site assessment or a quotation.</p></div><div class="article-cta-actions"><a class="button primary" href="https://wa.me/263781385609?text=${encodeURIComponent(`Hello AriQ, I read your article: ${post.title}. I would like more information.`)}">Chat on WhatsApp</a>${serviceButton}</div></aside>${relatedSection}`;
     }
   } catch (error) {
     const message = '<div class="article-error"><h2>Unable to load articles</h2><p>Please refresh the page or try again later.</p></div>';

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Business Website Checklist: 15 Features That Turn Visitors Into Customers</title><desc id="desc">Website screen with a detailed conversion and quality checklist</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#02070c"/><stop offset="0.55" stop-color="#071722"/><stop offset="1" stop-color="#061019"/></linearGradient><radialGradient id="glow"><stop stop-color="#7c5cff" stop-opacity=".48"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0"/></radialGradient><pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity=".045"/></pattern></defs>
+<rect width="1200" height="675" fill="url(#bg)"/><rect width="1200" height="675" fill="url(#grid)"/><circle cx="270" cy="320" r="330" fill="url(#glow)"/><path d="M0 594 C260 520 410 675 690 585 C900 520 1030 525 1200 585 V675 H0Z" fill="#7c5cff" opacity=".12"/>
+<g transform="translate(0 60) scale(.70)"><g stroke="#eaf8ff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="145" y="145" width="430" height="285" rx="22"/><path d="M145 205 H575"/><path d="M205 260 l18 18 34 -42 M205 325 l18 18 34 -42 M205 390 l18 18 34 -42"/><path d="M300 265 H505 M300 330 H470 M300 395 H520"/></g></g>
+<text x="640" y="92" fill="#43d5ff" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="800" letter-spacing="2.5">ARIQ CLIENT RESOURCE</text>
+<text x="640" y="242" fill="#f4fbff" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="800"><tspan x="640" dy="0">Business Website</tspan><tspan x="640" dy="52">Checklist: 15 Features</tspan><tspan x="640" dy="52">That Turn Visitors Into</tspan><tspan x="640" dy="52">Customers</tspan></text>
+<text x="640" y="550" fill="#a9bac7" font-family="Arial,Helvetica,sans-serif" font-size="24">Web Development</text>
+<rect x="640" y="580" width="225" height="6" rx="3" fill="#7c5cff"/><circle cx="885" cy="583" r="6" fill="#43d5ff"/>
+</svg>
